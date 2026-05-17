@@ -1,0 +1,48 @@
+.logo-mark {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.logo-mark .logo-text {
+  font-size: 22px;
+  color: white;
+  font-family: 'Trebuchet MS', Roboto, Arial, sans-serif;
+}
+
+.logo-mark .logo-dot {
+  color: rgb(255, 138, 0);
+  font-size: 26px;
+  margin-left: 2px;
+  line-height: 1;
+}
+
+.logo-mark .logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgb(255, 138, 0);
+  color: white;
+  font-weight: 800;
+  font-size: 18px;
+  font-family: 'Trebuchet MS', Roboto, Arial, sans-serif;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Hide the desktop wordmark / mobile badge depending on viewport. */
+.logo-mobile { display: none; }
+
+@media (max-width: 675px) {
+  .header .logo-desktop { display: none; }
+  .header .logo-mobile { display: inline-flex; }
+}
+
+@media (max-width: 575px) {
+  .checkout-header .logo-desktop { display: none; }
+  .checkout-header .logo-mobile { display: inline-flex; }
+}
