@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
   for (const item of cartItems) {
     const product = await Product.findByPk(item.productId);
     const deliveryOption = await DeliveryOption.findByPk(item.deliveryOptionId);
+    if (!product || !deliveryOption) continue;
     totalItems += item.quantity;
     productCostCents += product.priceCents * item.quantity;
     shippingCostCents += deliveryOption.priceCents;
