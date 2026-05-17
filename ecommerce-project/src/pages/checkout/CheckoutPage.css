@@ -69,7 +69,7 @@
 }
 
 .checkout-page .delivery-date {
-  color: rgb(25, 135, 84);
+  color: rgb(255, 138, 0);
   font-weight: 700;
   font-size: 19px;
   margin-top: 5px;
@@ -117,6 +117,21 @@
 
 .checkout-page .product-quantity .link-primary {
   margin-left: 3px;
+}
+
+.checkout-page .quantity-input {
+  width: 50px;
+  padding: 2px 6px;
+  font-size: 15px;
+  border: 1px solid rgb(180, 180, 180);
+  border-radius: 4px;
+  margin: 0 6px;
+}
+
+.checkout-page .quantity-error {
+  color: rgb(193, 7, 7);
+  font-size: 13px;
+  margin-top: 4px;
 }
 
 @media (max-width: 1000px) {
@@ -192,7 +207,7 @@
 }
 
 .checkout-page .total-row {
-  color: rgb(25, 135, 84);
+  color: rgb(255, 138, 0);
   font-weight: 700;
   font-size: 18px;
 

@@ -2,7 +2,8 @@
   height: 60px;
   padding-left: 30px;
   padding-right: 30px;
-  background-color: white;
+  background-color: rgb(0, 0, 0);
+  color: white;
 
   display: flex;
   justify-content: center;
@@ -12,6 +13,14 @@
   left: 0;
   right: 0;
   z-index: 1000;
+}
+
+.checkout-header .checkout-header-middle-section {
+  color: white;
+}
+
+.checkout-header .checkout-header-right-section img {
+  filter: brightness(0) invert(1);
 }
 
 .checkout-header .header-content {
@@ -67,7 +76,7 @@
 }
 
 .checkout-header .return-to-home-link {
-  color: rgb(25, 135, 84);
+  color: rgb(255, 138, 0);
 
   text-decoration: none;
   cursor: pointer;

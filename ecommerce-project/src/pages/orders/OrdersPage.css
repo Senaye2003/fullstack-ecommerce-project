@@ -149,6 +149,8 @@
 .orders-page .buy-again-icon {
   width: 20px;
   margin-right: 10px;
+  /* Render the dark icon white on top of the orange button. */
+  filter: brightness(0) invert(1);
 }
 
 .orders-page .product-actions {

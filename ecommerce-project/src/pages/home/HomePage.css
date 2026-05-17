@@ -109,10 +109,13 @@
 .home-page .product-rating-stars {
   width: 100px;
   margin-right: 6px;
+  /* Tint the existing rating PNGs to dark orange (~#CC5500). */
+  filter: brightness(0) saturate(100%) invert(40%) sepia(98%)
+          saturate(2200%) hue-rotate(0deg) brightness(95%) contrast(102%);
 }
 
 .home-page .product-rating-count {
-  color: rgb(25, 135, 84);
+  color: rgb(255, 138, 0);
   cursor: auto;
   margin-top: 3px;
 }
@@ -131,17 +134,25 @@
 }
 
 .home-page .added-to-cart {
-  color: rgb(25, 135, 84);
+  color: rgb(255, 138, 0);
   font-size: 16px;
 
   display: flex;
   align-items: center;
   margin-bottom: 8px;
+}
 
-  /* At first, the "Added to cart" message will
-     be invisible. Use JavaScript to change the
-     opacity and make it visible. */
-  opacity: 0;
+.home-page .search-results-header {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 18px 25px 0;
+}
+
+.home-page .products-loading,
+.home-page .no-results {
+  padding: 40px 25px;
+  color: rgb(100, 100, 100);
+  font-size: 16px;
 }
 
 .home-page .added-to-cart img {
