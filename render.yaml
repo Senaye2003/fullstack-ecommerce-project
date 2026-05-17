@@ -1,0 +1,41 @@
+databases:
+  - name: senaye-db
+    databaseName: senaye
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: senaye-ecommerce
+    runtime: node
+    plan: free
+    branch: main
+    rootDir: .
+    buildCommand: ./render-build.sh
+    startCommand: node ecommerce-backend/server.js
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DB_TYPE
+        value: postgres
+      - key: RDS_HOSTNAME
+        fromDatabase:
+          name: senaye-db
+          property: host
+      - key: RDS_PORT
+        fromDatabase:
+          name: senaye-db
+          property: port
+      - key: RDS_DB_NAME
+        fromDatabase:
+          name: senaye-db
+          property: database
+      - key: RDS_USERNAME
+        fromDatabase:
+          name: senaye-db
+          property: user
+      - key: RDS_PASSWORD
+        fromDatabase:
+          name: senaye-db
+          property: password
