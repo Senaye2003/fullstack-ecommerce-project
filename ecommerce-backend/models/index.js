@@ -13,6 +13,11 @@ const defaultPort = defaultPorts[dbType];
 export let sequelize;
 
 if (isUsingRDS) {
+  // PG_SSL=true makes the connection use TLS without verifying the CA chain,
+  // which is what hosted Postgres providers like Neon, Supabase, Heroku, and
+  // Render's external connections require.
+  const useSsl = String(process.env.PG_SSL || '').toLowerCase() === 'true';
+
   sequelize = new Sequelize({
     database: process.env.RDS_DB_NAME,
     username: process.env.RDS_USERNAME,
@@ -20,7 +25,12 @@ if (isUsingRDS) {
     host: process.env.RDS_HOSTNAME,
     port: process.env.RDS_PORT || defaultPort,
     dialect: dbType,
-    logging: false
+    logging: false,
+    ...(useSsl && {
+      dialectOptions: {
+        ssl: { require: true, rejectUnauthorized: false }
+      }
+    })
   });
 } else {
   sequelize = new Sequelize({
