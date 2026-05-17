@@ -1,11 +1,14 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { useState, useEffect, Fragment } from 'react';import { Header } from '../../components/Header';
+import { useState, useEffect, Fragment } from 'react';
+import { Link } from 'react-router';
+import { Header } from '../../components/Header';
 import { formatMoney } from '../../utils/money';
 import './OrdersPage.css';
 
-export function OrdersPage({ cart }) {
+export function OrdersPage({ cart, loadCart }) {
   const [orders, setOrders] = useState([]);
+  const [busyId, setBusyId] = useState(null);
 
   useEffect(() => {
     axios.get('/api/orders?expand=products')
@@ -14,9 +17,19 @@ export function OrdersPage({ cart }) {
       });
   }, []);
 
+  const buyAgain = async (productId) => {
+    setBusyId(productId);
+    try {
+      await axios.post('/api/cart-items', { productId, quantity: 1 });
+      if (loadCart) await loadCart();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <>
-      <title>Orders</title>
+      <title>Orders · Senaye</title>
 
       <Header cart={cart} />
 
@@ -48,10 +61,13 @@ export function OrdersPage({ cart }) {
 
                 <div className="order-details-grid">
                   {order.products.map((orderProduct) => {
+                    const productId = orderProduct.product.id;
                     return (
-                      <Fragment key={orderProduct.product.id}>
+                      <Fragment key={productId}>
                         <div className="product-image-container">
-                          <img src={orderProduct.product.image} />
+                          <img
+                            src={orderProduct.product.image}
+                            alt={orderProduct.product.name} />
                         </div>
 
                         <div className="product-details">
@@ -64,18 +80,24 @@ export function OrdersPage({ cart }) {
                           <div className="product-quantity">
                             Quantity: {orderProduct.quantity}
                           </div>
-                          <button className="buy-again-button button-primary">
-                            <img className="buy-again-icon" src="images/icons/buy-again.png" />
-                            <span className="buy-again-message">Add to Cart</span>
+                          <button
+                            className="buy-again-button button-primary"
+                            data-testid={`buy-again-${productId}`}
+                            disabled={busyId === productId}
+                            onClick={() => buyAgain(productId)}>
+                            <img className="buy-again-icon" src="/images/icons/buy-again.png" alt="" />
+                            <span className="buy-again-message">
+                              {busyId === productId ? 'Adding…' : 'Buy it again'}
+                            </span>
                           </button>
                         </div>
 
                         <div className="product-actions">
-                          <a href="/tracking">
+                          <Link to={`/tracking/${order.id}/${productId}`}>
                             <button className="track-package-button button-secondary">
                               Track package
                             </button>
-                          </a>
+                          </Link>
                         </div>
                       </Fragment>
                     );
