@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { Logo } from '../../components/Logo';
 import { OrderSummary } from './OrderSummary';
 import { PaymentSummary } from './PaymentSummary';
 import './checkout-header.css';
@@ -8,6 +9,8 @@ import './CheckoutPage.css';
 export function CheckoutPage({ cart, loadCart }) {
   const [deliveryOptions, setDeliveryOptions] = useState([]);
   const [paymentSummary, setPaymentSummary] = useState(null);
+
+  const totalCartItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
   useEffect(() => {
     const fetchCheckoutData = async () => {
@@ -25,24 +28,24 @@ export function CheckoutPage({ cart, loadCart }) {
 
   return (
     <>
-      <title>Checkout</title>
+      <title>Checkout · Senaye</title>
 
       <div className="checkout-header">
         <div className="header-content">
           <div className="checkout-header-left-section">
-            <a href="/">
-              <img className="logo" src="images/logo.png" />
-              <img className="mobile-logo" src="images/mobile-logo.png" />
+            <a href="/" aria-label="Senaye home">
+              <Logo variant="desktop" />
+              <Logo variant="mobile" />
             </a>
           </div>
 
           <div className="checkout-header-middle-section">
             Checkout (<a className="return-to-home-link"
-              href="/">3 items</a>)
+              href="/">{totalCartItems} {totalCartItems === 1 ? 'item' : 'items'}</a>)
           </div>
 
           <div className="checkout-header-right-section">
-            <img src="images/icons/checkout-lock-icon.png" />
+            <img src="/images/icons/checkout-lock-icon.png" alt="Secure checkout" />
           </div>
         </div>
       </div>
