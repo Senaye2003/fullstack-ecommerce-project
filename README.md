@@ -1,124 +1,81 @@
-# Senaye
+# Senaye E-Commerce
 
-A full-stack e-commerce demo: browse products, manage a cart, check out, place orders, and track deliveries. Built with React on the front and Node/Express/Sequelize on the back, deployed to Render with a hosted Neon Postgres database.
+A full-stack e-commerce app where you can browse products, manage a cart, check out, and track orders. React frontend, Node/Express backend, Postgres database.
 
-**Live:** [https://senaye-ecommerce.onrender.com](https://senaye-ecommerce.onrender.com)
+**Live:** https://senaye-ecommerce.onrender.com
 
-> The free Render service sleeps after ~15 minutes of inactivity. The first request after a nap takes ~30 seconds to wake the server; everything after that is instant.
+Note: it runs on Render's free tier, so the first request after the server has been idle takes about 30 seconds.
 
 ## Features
 
-- Product grid with **search** (URL-driven, shareable links, empty / loading / no-results states)
-- Cart with **add**, **delete**, and an inline **Update quantity** flow (Save / Cancel, 1–10 validation)
-- Delivery options that re-cost the order in real time
-- Checkout summary that posts an order to the backend, clears the cart, and navigates to the orders page
-- Orders page with **Buy it again** (re-adds an item to the cart) and **Track package**
-- Tracking page (`/tracking/:orderId/:productId`) with a Preparing → Shipped → Delivered progress bar interpolated from order time and estimated arrival
-- Orange + black brand theme with a custom `Senaye.` wordmark, shopping-bag favicon, and dark-orange star ratings
+- Product search with URL-driven, shareable links
+- Cart: add, delete, and update quantities (with 1-10 validation)
+- Delivery options that update the order total in real time
+- Checkout that creates an order and clears the cart
+- Orders page with "Buy it again" and package tracking
+- Tracking page with a Preparing / Shipped / Delivered progress bar based on order time and estimated arrival
 
 ## Tech stack
 
-| Layer | Stack |
-| --- | --- |
-| Frontend | React 19, React Router 7, Axios, dayjs, Vite |
-| Backend | Node 20, Express 4, Sequelize 6 |
-| Database | Postgres in production (Neon); SQLite via `sql.js-as-sqlite3` locally |
-| Tests | Vitest + Testing Library |
-| Hosting | Render web service (auto-deploy from `main`) + Neon Postgres |
+- Frontend: React 19, React Router 7, Axios, Vite
+- Backend: Node 20, Express 4, Sequelize 6
+- Database: Postgres (Neon) in production, SQLite locally
+- Tests: Vitest + Testing Library
+- Hosting: Render, auto-deploys from main
 
 ## Project structure
 
 ```
 fullstack-ecommerce-project/
 ├── ecommerce-backend/        # Express API + serves the built frontend
-│   ├── models/               # Sequelize models (Product, CartItem, Order, DeliveryOption)
-│   ├── routes/               # /api/products, /api/cart-items, /api/orders, ...
-│   ├── defaultData/          # Seed data inserted on first boot
-│   ├── images/               # Static product / icon assets served at /images
-│   └── server.js             # Express entrypoint
-├── ecommerce-project/        # Vite + React frontend
-│   ├── src/
-│   │   ├── components/       # Header, Logo
-│   │   ├── pages/            # home, checkout, orders, tracking
-│   │   └── utils/            # formatMoney, etc.
-│   └── public/               # senaye.svg favicon
-├── render.yaml               # Blueprint (optional — manual setup also works)
-├── render-build.sh           # Build script Render runs on each deploy
-└── README.md                 # This file
+│   ├── models/               # Sequelize models
+│   ├── routes/               # /api/products, /api/cart-items, /api/orders
+│   ├── defaultData/          # Seed data
+│   └── server.js
+├── ecommerce-project/        # React frontend (Vite)
+│   └── src/
+│       ├── components/
+│       ├── pages/            # home, checkout, orders, tracking
+│       └── utils/
+├── render.yaml
+└── render-build.sh
 ```
 
-## Getting started locally
+## Run it locally
 
-You'll want two terminals.
-
-**Terminal 1 — backend**
+Backend (terminal 1):
 
 ```bash
 cd ecommerce-backend
 npm install
-npm start          # listens on http://localhost:3000
+npm start          # http://localhost:3000
 ```
 
-The backend defaults to a local SQLite file (`database.sqlite`) so no DB setup is needed. Default products, delivery options, cart items, and orders are seeded on first boot.
+Uses a local SQLite file by default, so no database setup is needed. Sample data is seeded on first run.
 
-**Terminal 2 — frontend**
+Frontend (terminal 2):
 
 ```bash
 cd ecommerce-project
 npm install
-npm run dev        # opens http://localhost:5173
+npm run dev        # http://localhost:5173
 ```
 
-Vite proxies `/api` and `/images` to `localhost:3000`, so the frontend talks to the backend without CORS gymnastics.
+Vite proxies /api and /images to the backend.
 
-## Running the tests
+## Tests
 
 ```bash
 cd ecommerce-project
-npm test            # one-shot
-npm run test:watch  # re-runs on file changes
+npm test
 ```
 
-Tests cover the money formatter, the home page render, the product card, the cart Update flow, the header search submit, Buy-it-again, and the tracking page (happy path + error states).
+Tests cover the money formatter, home page, product card, cart update flow, search, buy-it-again, and the tracking page.
 
-## Environment variables
+## Deployment
 
-The backend supports two database modes, selected by env vars:
+Deployed on Render with a Neon Postgres database. The build script builds the frontend and copies it into the backend so one Express server serves everything. To set it up yourself: create a Postgres database on neon.tech, create a Render web service from this repo with build command `./render-build.sh` and start command `node ecommerce-backend/server.js`, then set the `RDS_*` env vars from your Neon connection string plus `DB_TYPE=postgres` and `PG_SSL=true`.
 
-| Variable | Required for | Description |
-| --- | --- | --- |
-| `RDS_HOSTNAME` | Postgres / MySQL | DB host |
-| `RDS_PORT` | Postgres / MySQL | DB port (5432 / 3306) |
-| `RDS_DB_NAME` | Postgres / MySQL | DB name |
-| `RDS_USERNAME` | Postgres / MySQL | DB user |
-| `RDS_PASSWORD` | Postgres / MySQL | DB password |
-| `DB_TYPE` | Postgres / MySQL | `postgres` or `mysql` (default `mysql`) |
-| `PG_SSL` | Hosted Postgres | Set to `true` for Neon / Supabase / Render Postgres external (enables TLS without CA verification) |
-| `PORT` | Always | HTTP port; Render sets this automatically |
+## Credits
 
-If none of the `RDS_*` vars are set, the backend falls back to local SQLite.
-
-## Deployment (Render + Neon)
-
-1. **Database** — create a free Postgres project on [neon.tech](https://neon.tech). Copy the connection URL.
-2. **Web service** — on [render.com](https://render.com), create a Web Service from this repo with:
-   - Build command: `./render-build.sh`
-   - Start command: `node ecommerce-backend/server.js`
-   - Env vars: parse the Neon URL into `RDS_HOSTNAME` / `RDS_PORT` / `RDS_DB_NAME` / `RDS_USERNAME` / `RDS_PASSWORD`, plus `DB_TYPE=postgres` and `PG_SSL=true`.
-3. Push to `main`. Render rebuilds and redeploys on every push.
-
-`render.yaml` documents the same setup as a Blueprint if you'd rather click "New + → Blueprint" instead.
-
-## How it serves the SPA
-
-A single Express process serves everything:
-
-- `/api/*` → JSON endpoints
-- `/images/*` → static product images
-- everything else → the built Vite bundle from `ecommerce-backend/dist/`, with a catch-all that returns `index.html` so React Router owns the URL.
-
-The Render build script (`render-build.sh`) builds the Vite frontend, then copies `ecommerce-project/dist/` to `ecommerce-backend/dist/` so the Express server picks it up.
-
-## License
-
-ISC — see individual `package.json` files. This project started from a [supersimple.dev](https://supersimple.dev) full-stack course template and was extended into Senaye.
+Started from a supersimple.dev course template and extended from there.
